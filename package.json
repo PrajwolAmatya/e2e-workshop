@@ -1,0 +1,27 @@
+{
+  "name": "todo-app-e2e-workshop",
+  "version": "1.0.0",
+  "description": "Sample Todo App for E2E testing workshop using Gherkin (Cucumber) and Playwright",
+  "scripts": {
+    "start": "node server.js",
+    "test:e2e": "cucumber-js --require tests/cucumber.config.js --require \"tests/step_definitions/*.js\" --format @cucumber/pretty-formatter"
+  },
+  "keywords": [
+    "playwright",
+    "cucumber",
+    "gherkin",
+    "e2e",
+    "workshop"
+  ],
+  "author": "Workshop",
+  "license": "MIT",
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.0.1",
+    "@cucumber/pretty-formatter": "^1.0.1",
+    "@playwright/test": "^1.48.0",
+    "playwright": "^1.48.0"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

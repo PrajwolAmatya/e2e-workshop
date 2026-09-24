@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo App - My Tasks</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    header h1 { font-size: 1.5rem; }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    #logout-button {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    #logout-button:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .add-todo {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+    #todo-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    #todo-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    #add-button {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    #add-button:hover {
+      opacity: 0.95;
+    }
+    .todo-list {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .todo-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 0.75rem;
+    }
+    .todo-item:last-child {
+      border-bottom: none;
+    }
+    .todo-item.completed .todo-text {
+      text-decoration: line-through;
+      color: #999;
+    }
+    .todo-text {
+      flex: 1;
+      font-size: 1rem;
+    }
+    .complete-btn, .delete-btn {
+      padding: 0.4rem 0.75rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .complete-btn {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    .complete-btn:hover {
+      background: #a7f3d0;
+    }
+    .delete-btn {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .delete-btn:hover {
+      background: #fecaca;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #999;
+    }
+    .empty-state p {
+      margin-top: 0.5rem;
+    }
+    .stats {
+      margin-top: 1rem;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Todos</h1>
+    <div class="user-info">
+      <span id="welcome-user">Welcome</span>
+      <button id="logout-button">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="add-todo">
+      <input type="text" id="todo-input" placeholder="What needs to be done?" aria-label="New todo">
+      <button id="add-button">Add Todo</button>
+    </div>
+
+    <div class="todo-list" id="todo-list">
+      <!-- Todos will be rendered here -->
+    </div>
+
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <script>
+    // Auth check
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    const username = localStorage.getItem('username') || 'User';
+    document.getElementById('welcome-user').textContent = `Welcome, ${username}`;
+
+    // Logout
+    document.getElementById('logout-button').addEventListener('click', () => {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('username');
+      // Keep todos in localStorage for demo, or clear if preferred
+      window.location.href = 'login.html';
+    });
+
+    // Todo management
+    let todos = JSON.parse(localStorage.getItem('todos') || '[]');
+
+    function saveTodos() {
+      localStorage.setItem('todos', JSON.stringify(todos));
+    }
+
+    function renderTodos() {
+      const list = document.getElementById('todo-list');
+      const stats = document.getElementById('stats');
+
+      if (todos.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state" id="empty-state">
+            <h3>No todos yet</h3>
+            <p>Add your first task above!</p>
+          </div>
+        `;
+        stats.textContent = '';
+        return;
+      }
+
+      list.innerHTML = todos.map((todo, index) => `
+        <div class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+          <span class="todo-text">${escapeHtml(todo.text)}</span>
+          <button class="complete-btn" data-action="complete" data-id="${todo.id}">
+            ${todo.completed ? 'Undo' : 'Complete'}
+          </button>
+          <button class="delete-btn" data-action="delete" data-id="${todo.id}">Delete</button>
+        </div>
+      `).join('');
+
+      const remaining = todos.filter(t => !t.completed).length;
+      stats.textContent = `${remaining} item${remaining !== 1 ? 's' : ''} left`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function addTodo(text) {
+      if (!text.trim()) return;
+      const todo = {
+        id: Date.now().toString(),
+        text: text.trim(),
+        completed: false
+      };
+      todos.push(todo);
+      saveTodos();
+      renderTodos();
+    }
+
+    function toggleComplete(id) {
+      const todo = todos.find(t => t.id === id);
+      if (todo) {
+        todo.completed = !todo.completed;
+        saveTodos();
+        renderTodos();
+      }
+    }
+
+    function deleteTodo(id) {
+      todos = todos.filter(t => t.id !== id);
+      saveTodos();
+      renderTodos();
+    }
+
+    // Event listeners
+    document.getElementById('add-button').addEventListener('click', () => {
+      const input = document.getElementById('todo-input');
+      addTodo(input.value);
+      input.value = '';
+      input.focus();
+    });
+
+    document.getElementById('todo-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('add-button').click();
+      }
+    });
+
+    document.getElementById('todo-list').addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === 'complete') toggleComplete(id);
+      if (action === 'delete') deleteTodo(id);
+    });
+
+    // Initial render
+    renderTodos();
+  </script>
+</body>
+</html>
