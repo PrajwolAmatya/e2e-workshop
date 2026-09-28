@@ -2,120 +2,85 @@
 
 A simple Todo application with user login. The app is served at `http://localhost:3000` and includes end-to-end (E2E) tests written with **Cucumber** and **Playwright**.
 
-## Requirements
+# Requirements
 
-| Requirement | Version |
-|-------------|---------|
-| **Node.js** | **>= 20** (required by Playwright) |
-| npm        | Comes with Node.js |
-
-> Playwright (used for E2E tests) requires Node.js 20 or higher. Using an older version will cause the tests to fail.
-
----
+| Requirement | Version            |
+| ----------- | ------------------ |
+| **Node.js** | **>= 20**          |
+| npm         | Comes with Node.js |
 
 ## Install Node.js
+### Windows
+1. Download the LTS installer from https://nodejs.org/en/download
+2. Download the `Windows Installer (.msi)`
+3. Run the installer and follow the prompts.
+4. Open a new `Command Prompt` or `Powershell` window and verify:
 
-### Linux (Ubuntu / Debian)
+```
+node --version
+npm --version
+```
 
-```bash
-# Using NodeSource (recommended)
+## Linux (Ubuntu/Debian)
+```
+# Using NodeSource
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Verify
-node --version   # should be v20.x or higher
-npm --version
-```
-
-### Linux (Fedora / RHEL / CentOS)
-
-```bash
-sudo dnf install nodejs
-# or for a specific major version via NodeSource:
-curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
-sudo dnf install -y nodejs
-
 node --version
 npm --version
 ```
 
-### Windows
+## macOS
+**Option 1 - Official installer**
+1. Download the macOS LTS installer from https://nodejs.org/en/download
+2. Download the `macOS Installer (.pkg)`
+3. Open the `.pkg`  and follow the installation steps.
+4. Verify in terminal:
 
-1. Download the **LTS** installer (v20 or newer) from [https://nodejs.org](https://nodejs.org).
-2. Run the installer and follow the prompts.
-3. Open a new **Command Prompt** or **PowerShell** window and verify:
-
-```powershell
+```
 node --version
 npm --version
 ```
 
-### macOS
-
-**Option 1 – Official installer**
-
-1. Download the macOS LTS installer from [https://nodejs.org](https://nodejs.org).
-2. Open the `.pkg` and follow the installation steps.
-3. Verify in Terminal:
-
-```bash
-node --version
-npm --version
+**Option 2 - Homebrew**
 ```
-
-**Option 2 – Homebrew**
-
-```bash
-brew install node@20
-# or the latest LTS
 brew install node
 
+# verify
 node --version
 npm --version
 ```
 
----
+# Project Setup
 
-## Project setup
-
-```bash
-# Enter the project directory
-cd todo-app-private
-
-# Install dependencies
+1. Goto https://github.com/PrajwolAmatya/e2e-workshop
+2. Click on `Code`
+3. Then download the zip by clicking `Download ZIP`
+4. Extract the project
+5. Enter the project directory
+```
+cd e2e-workshop
+```
+6. Install dependencies
+```
 npm install
-
-# Install Playwright browsers (required for E2E tests)
+```
+7. Install Playwright
+```
 npx playwright install
 ```
 
----
-
-## How to run the app
-
-The Todo app listens on **port 3000**. Start it in one terminal, then open a browser or run the E2E tests against it.
-
-### Linux / macOS
-
-```bash
-# From the project root
+## Run the app
+```
 npm start
 ```
 
-Then open: [http://localhost:3000](http://localhost:3000)
+Then open: http://localhost:3000
 
 Default login credentials (from the E2E tests):
 
 | Username | Password |
 |----------|----------|
 | `admin`  | `admin`  |
-
-### Windows (Command Prompt / PowerShell)
-
-```powershell
-cd todo-app-private
-npm start
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
