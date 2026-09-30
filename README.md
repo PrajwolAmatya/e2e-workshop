@@ -55,6 +55,23 @@ npm --version
 
 # Project Setup
 
+**Option 1: If you have git installed in your system**
+
+1. In your terminal run `git clone git@github.com:PrajwolAmatya/e2e-workshop.git`
+2. Enter the project directory
+```
+cd e2e-workshop
+```
+3. Install dependencies
+```
+npm install
+```
+4. Install Playwright
+```
+npx playwright install
+```
+
+**Option 2**
 1. Goto https://github.com/PrajwolAmatya/e2e-workshop
 2. Click on `Code`
 3. Then download the zip by clicking `Download ZIP`
